@@ -14,9 +14,7 @@ This is a web-based weather application built using Flask, Python, and the OpenW
 - **Python & Flask:** For the backend logic and API integration.
 - **HTML/CSS/JavaScript:** For the frontend and responsive design.
 - **OpenWeatherMap API:** To fetch real-time weather data and forecasts.
-# Delite Weather App
-
-
+  
 ## Setup Instructions
 
 ### 1. Clone the Repository to your local machine

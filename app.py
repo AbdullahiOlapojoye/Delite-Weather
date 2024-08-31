@@ -3,27 +3,40 @@ import requests
 
 app = Flask(__name__)
 
-API_KEY = '14fcace15cc3f4d7e4fbc5fc709779fa' 
+API_KEY = '14fcace15cc3f4d7e4fbc5fc709779fa'
 
-def get_weather(city):
-    url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric'
-    response = requests.get(url)
-    return response.json()
+def get_weather(city=None, lat=None, lon=None):
+    if city:
+        url = f'http://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric'
+    elif lat and lon:
+        url = f'http://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}&units=metric'
+    else:
+        return None, "Error: No location provided"
 
-def get_forecast(city):
-    url = f'http://api.openweathermap.org/data/2.5/forecast?q={city}&appid={API_KEY}&units=metric'
     response = requests.get(url)
-    return response.json()
+    if response.status_code == 200:
+        return response.json(), None
+    else:
+        return None, f"Error: {response.json().get('message', 'Unable to fetch data')}"
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     weather_data = None
-    forecast_data = None
+    error_message = None
+
     if request.method == 'POST':
         city = request.form.get('city')
-        weather_data = get_weather(city)
-        forecast_data = get_forecast(city)
-    return render_template('index.html', weather=weather_data, forecast=forecast_data)
+        lat = request.form.get('lat')
+        lon = request.form.get('lon')
+        
+        if city:
+            weather_data, error_message = get_weather(city=city)
+        elif lat and lon:
+            weather_data, error_message = get_weather(lat=lat, lon=lon)
+        else:
+            error_message = "Please provide a city name or allow location access."
+
+    return render_template('index.html', weather=weather_data, error=error_message)
 
 if __name__ == '__main__':
     app.run(debug=True)

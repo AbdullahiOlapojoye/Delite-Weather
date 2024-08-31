@@ -3,15 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Delight Weather App</title>
+    <title>Weather App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Delight Weather App</h1>
+    <h1>Weather App</h1>
     <form method="POST">
-        <input type="text" name="city" placeholder="Enter city name" required>
+        <input type="text" name="city" placeholder="Enter city name">
         <button type="submit">Get Weather</button>
     </form>
+    <button onclick="getLocation()">Use My Location</button>
+
+    {% if error %}
+        <div class="error-message">
+            <p>{{ error }}</p>
+        </div>
+    {% endif %}
 
     {% if weather %}
         <div class="current-weather">
@@ -22,22 +29,57 @@
             <p>Humidity: {{ weather['main']['humidity'] }}%</p>
             <p>Wind Speed: {{ weather['wind']['speed'] }} m/s</p>
         </div>
-
-        {% if forecast %}
-        <h2>5-Day Forecast:</h2>
-        <div class="forecast-container">
-            {% for day in forecast.list %}
-                {% if loop.index % 8 == 0 %}
-                    <div class="forecast-day">
-                        <h3>{{ day.dt_txt.split()[0] }}</h3>
-                        <img src="http://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png" alt="Weather icon">
-                        <p>Temp: {{ day.main.temp }}°C</p>
-                        <p>{{ day.weather[0].description.capitalize() }}</p>
-                    </div>
-                {% endif %}
-            {% endfor %}        
-        </div>
-        {% endif %}
     {% endif %}
+
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            
+            const form = document.createElement('form');
+            form.method = 'POST';
+
+            const latInput = document.createElement('input');
+            latInput.type = 'hidden';
+            latInput.name = 'lat';
+            latInput.value = lat;
+
+            const lonInput = document.createElement('input');
+            lonInput.type = 'hidden';
+            lonInput.name = 'lon';
+            lonInput.value = lon;
+
+            form.appendChild(latInput);
+            form.appendChild(lonInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+    </script>
 </body>
 </html>

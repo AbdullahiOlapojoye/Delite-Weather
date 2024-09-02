@@ -19,5 +19,8 @@ This is a web-based weather application built using Flask, Python, and the OpenW
 
 ### 1. Clone the Repository to your local machine
 ### 2. Create and Configure the .env File and fill with: OPENWEATHER_API_KEY= 'put_your_open_weather_api_key_here' (Get api key from https://openweathermap.org/)
-### 3. Install dependencies : pip install -r requirements.txt
+### 3. Install dependencies 
+- create a virtual environment: python -m venv venv
+- Activate the virtual environment: venv\Scripts\activate (Windows) or source venv/bin/activate (MacOS)
+- Install the requirements: pip install -r requirements.txt
 ### 4. Run application

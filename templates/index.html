@@ -7,48 +7,71 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Delite Weather App</h1>
-    <form method="POST">
-        <input type="text" name="city" placeholder="Enter city name">
-        <button type="submit">Get Weather by City</button>
-    </form>
-    <button id="location-btn">Use My Location</button>
+    <div class="weather-app">
+        <h1>Delite Weather App</h1>
 
-    <div id="error-container">
-        {% if error %}
-            <div class="error-message">
-                <p>{{ error }}</p>
-            </div>
-        {% endif %}
-    </div>
+        <p>Developed by Abdullahi Olapojoye</p>
 
-    <div id="weather-container">
-        {% if weather %}
-            <div class="current-weather">
-                <h2>Current Weather in {{ weather.name }}</h2>
-                <p>{{ weather.weather[0].description.capitalize() }}</p>
-                <img src="http://openweathermap.org/img/wn/{{ weather.weather[0].icon }}@2x.png" alt="Weather icon">
-                <p>Temperature: {{ weather.main.temp }}°C</p>
-                <p>Humidity: {{ weather.main.humidity }}%</p>
-                <p>Wind Speed: {{ weather.wind.speed }} m/s</p>
-            </div>
-        {% endif %}
+        <!-- Info Button -->
+        <button id="info-btn">About PM Accelerator</button>
 
-        {% if forecast %}
-        <h2>5-Day Forecast:</h2>
-        <div class="forecast-container">
-            {% for day in forecast.list %}
-                {% if loop.index % 8 == 0 %}
-                    <div class="forecast-day">
-                        <h3>{{ day.dt_txt.split(' ')[0] }}</h3>
-                        <img src="http://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png" alt="Weather icon">
-                        <p>Temp: {{ day.main.temp }}°C</p>
-                        <p>{{ day.weather[0].description.capitalize() }}</p>
-                    </div>
-                {% endif %}
-            {% endfor %}
+        <!-- LinkedIn Button -->
+        <a href="https://www.linkedin.com/school/productmanagerinterview/" target="_blank">
+            <button type="button">Visit LinkedIn Page</button>
+        </a>
+
+        <form method="POST">
+            <input type="text" name="city" placeholder="Enter city name">
+            <button type="submit">Get Weather by City</button>
+        </form>
+        <button id="location-btn">Use My Location</button>
+
+        <div id="error-container">
+            {% if error %}
+                <div class="error-message">
+                    <p>{{ error }}</p>
+                </div>
+            {% endif %}
         </div>
-        {% endif %}
+
+        <div id="weather-container">
+            {% if weather %}
+                <div class="current-weather">
+                    <h2>Current Weather in {{ weather.name }}</h2>
+                    <p>{{ weather.weather[0].description.capitalize() }}</p>
+                    <img src="http://openweathermap.org/img/wn/{{ weather.weather[0].icon }}@2x.png" alt="Weather icon">
+                    <p>Temperature: {{ weather.main.temp }}°C</p>
+                    <p>Humidity: {{ weather.main.humidity }}%</p>
+                    <p>Wind Speed: {{ weather.wind.speed }} m/s</p>
+                </div>
+            {% endif %}
+
+            {% if forecast %}
+            <h2>5-Day Forecast:</h2>
+            <div class="forecast-container">
+                {% for day in forecast.list %}
+                    {% if loop.index % 8 == 0 %}
+                        <div class="forecast-day">
+                            <h3>{{ day.dt_txt.split(' ')[0] }}</h3>
+                            <img src="http://openweathermap.org/img/wn/{{ day.weather[0].icon }}@2x.png" alt="Weather icon">
+                            <p>Temp: {{ day.main.temp }}°C</p>
+                            <p>{{ day.weather[0].description.capitalize() }}</p>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Info Modal -->
+        <div id="info-modal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>About PM Accelerator</h2>
+                <p>PM Accelerator is dedicated to empowering project management professionals through industry-leading resources, training, and community support. Visit our LinkedIn page for more details and insights on how we enhance project management capabilities across industries.</p>
+                <p><a href="https://www.linkedin.com/school/productmanagerinterview/" target="_blank">Visit our LinkedIn Page</a></p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -118,6 +141,25 @@
             });
             forecastHtml += '</div>';
             document.getElementById('weather-container').innerHTML += forecastHtml;
+        }
+
+        // Modal JavaScript
+        const infoBtn = document.getElementById('info-btn');
+        const infoModal = document.getElementById('info-modal');
+        const closeBtn = document.getElementsByClassName('close-btn')[0];
+
+        infoBtn.onclick = function() {
+            infoModal.style.display = "block";
+        }
+
+        closeBtn.onclick = function() {
+            infoModal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            if (event.target == infoModal) {
+                infoModal.style.display = "none";
+            }
         }
     </script>
 </body>
